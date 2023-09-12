@@ -17,7 +17,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          dnf install -y ccache which && dnf builddep -y ./dnf5.spec
+          dnf install -y ccache which
 
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
