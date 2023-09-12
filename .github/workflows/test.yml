@@ -54,7 +54,7 @@ jobs:
         run: export PATH=/usr/lib64/ccache:/usr/lib/ccache:$PATH; cmake --build build
 
       - name: What's here
-        run: ls -la; ls -la ~
+        run: ls -la; ls -la ~/.cache
 
       - name: Display ccache statistics
         run: ccache -s
