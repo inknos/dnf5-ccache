@@ -21,10 +21,8 @@ jobs:
 
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
-        shell: cmake -P {0}
-        run: |
-          string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
-          message("timestamp=${current_date} >> $GITHUB_OUTPUT")
+        run:
+          echo "timestamp=$(date +%Y-%m-%d-%H:%M:%S) UTC" >> "$GITHUB_OUTPUT"
 
       - name: ccache cache files
         uses: actions/cache@v3
