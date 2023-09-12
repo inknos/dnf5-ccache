@@ -17,7 +17,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          dnf install -y cmake ccache which
+          dnf install -y cmake ccache gcc-c++ which
 
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
