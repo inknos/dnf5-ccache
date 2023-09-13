@@ -22,13 +22,13 @@ jobs:
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
         run:
-          echo "timestamp=$(date +%Y-%m-%d-%H:%M:%S) UTC" >> "$GITHUB_OUTPUT"
+          echo "timestamp=$(date +%Y-%m-%d-%H:%M:%S)-UTC" >> "$GITHUB_OUTPUT"
 
       - name: ccache cache files
         uses: actions/cache@v3
         with:
           path: ~/.cache/ccache
-          key: ${{ runner.os }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+          key: ${{ runner.os }}-ccache-${{ github.base_ref }}-${{ github.head_ref }}-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
           restore-keys: |
             ${{ runner.os }}-ccache-
 
