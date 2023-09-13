@@ -28,7 +28,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/ccache
-          key: ${{ runner.os }}-ccache-${{ github.base_ref }}-${{ github.head_ref }}-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+          key: ${{ runner.os }}-ccache-${{ github.event.number }}-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
           restore-keys: |
             ${{ runner.os }}-ccache-
 
