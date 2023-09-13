@@ -1,0 +1,59 @@
+---
+name: build dnf5 with ccache to check for quick build errors
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-with-ccache:
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:rawhide
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          dnf install -y cmake ccache gcc-c++ which
+
+      - name: Prepare ccache timestamp
+        id: ccache_cache_timestamp
+        run:
+          echo "timestamp=$(date +%Y-%m-%d-%H:%M:%S)-UTC" >> "$GITHUB_OUTPUT"
+
+      - name: ccache cache files
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ccache
+          key: ${{ runner.os }}-ccache-${{ github.event.number }}-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-
+
+      - name: Create ccache symlinks to prioritize it over gcc
+        run: |
+            ln -s /usr/bin/ccache /usr/local/bin/gcc
+            ln -s /usr/bin/ccache /usr/local/bin/g++
+            ln -s /usr/bin/ccache /usr/local/bin/cc
+            ln -s /usr/bin/ccache /usr/local/bin/c++
+
+      - name: Zero ccache statistics
+        run: ccache -z
+
+      - name: is ccache used?
+        run: which gcc; ls -l /usr/local/bin/{gcc,g++,cc,c++}
+
+      - name: Configure cmake
+        run: export PATH=/usr/lib64/ccache:/usr/lib/ccache:$PATH; cmake -S . -B build
+
+      - name: Build dnf5
+        run: export PATH=/usr/lib64/ccache:/usr/lib/ccache:$PATH; cmake --build build
+
+      - name: What's here
+        run: ls -la; ls -la ~/.cache
+
+      - name: Display ccache statistics
+        run: ccache -s
+
